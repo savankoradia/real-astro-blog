@@ -2,6 +2,8 @@
 
 A blazing fast, highly customizable blog template built with Astro, React, and Tailwind CSS.
 
+🔗 **Live Demo:** [https://real-astro-blog.pages.dev](https://real-astro-blog.pages.dev)
+
 ## 🚀 Getting Started
 
 To create a new Astro project using this theme, run the following command in your terminal.
@@ -55,6 +57,12 @@ All commands are run from the root of the project, from a terminal:
 | `npm run preview`         | Preview your build locally, before deploying     |
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
+
+## Performance
+This theme is heavily optimized for speed and achieves very high PageSpeed Insights scores out of the box.
+![Mobile](page-speed-1.png)
+![Desktop](page-speed-2.png)
+
 
 ## 👀 Want to learn more?
 
