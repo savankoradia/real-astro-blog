@@ -13,6 +13,6 @@ export const SITE_CONFIG = {
   FOOTER_LINKS: [
     { label: "Privacy Policy", href: "/privacy-policy" },
     { label: "Terms of Service", href: "/terms-of-service" },
-    { label: "GitHub", href: "https://github.com", external: true },
+    { label: "GitHub", href: "https://github.com/savankoradia/real-astro-blog", external: true },
   ],
 };
