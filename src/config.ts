@@ -1,5 +1,5 @@
 export const SITE_CONFIG = {
-  SITE_TITLE: "Astro Blog",
+  SITE_TITLE: "Real Astro Blog",
   SITE_DESCRIPTION: "A blazing fast, highly customizable blog template built with Astro, React, and Tailwind CSS.",
   NEWSLETTER_FORM_ID: "546caf20-73d7-492e-bba9-be05bab360c2",
   CONTACT_EMAIL: "koradia.savan@gmail.com",
