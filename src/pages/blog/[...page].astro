@@ -1,0 +1,51 @@
+---
+import GlobalLayout from "@/layouts/GlobalLayout.astro";
+import { getCollection } from "astro:content";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+export async function getStaticPaths({ paginate }) {
+  const posts = await getCollection("blog");
+  // Pagination built-in using 6 posts per page
+  return paginate(posts, { pageSize: 6 });
+}
+
+const { page } = Astro.props;
+---
+
+<GlobalLayout title={`Blog - Page ${page.currentPage}`}>
+  <main class="mx-auto max-w-5xl px-4 py-12">
+    <h1 class="mb-8 text-4xl font-extrabold tracking-tight text-slate-900">All Posts</h1>
+    
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {page.data.map((post) => (
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <a href={`/blog/${post.id}`} class="hover:text-blue-600 transition-colors">{post.data.title}</a>
+            </CardTitle>
+            <CardDescription class="line-clamp-3">{post.data.description}</CardDescription>
+          </CardHeader>
+        </Card>
+      ))}
+    </div>
+
+    <div class="mt-12 flex items-center justify-between">
+      {page.url.prev ? (
+        <a href={page.url.prev}>
+          <Button variant="outline">Previous</Button>
+        </a>
+      ) : <div />}
+      
+      <span class="text-sm font-medium text-slate-500">
+        Page {page.currentPage} of {page.lastPage}
+      </span>
+
+      {page.url.next ? (
+        <a href={page.url.next}>
+          <Button variant="outline">Next</Button>
+        </a>
+      ) : <div />}
+    </div>
+  </main>
+</GlobalLayout>

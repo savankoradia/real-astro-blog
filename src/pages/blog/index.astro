@@ -1,0 +1,79 @@
+---
+import GlobalLayout from "@/layouts/GlobalLayout.astro";
+import { getCollection } from "astro:content";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { SITE_CONFIG } from "@/config";
+
+const posts = await getCollection("blog");
+
+// Sort posts by date in descending order
+const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const postsPerPage = SITE_CONFIG.POSTS_PER_PAGE;
+---
+
+<GlobalLayout title={`Blog - ${SITE_CONFIG.SITE_TITLE}`}>
+  <main class="mx-auto max-w-5xl px-4 py-12">
+    <h1 class="mb-8 text-4xl font-extrabold tracking-tight text-slate-900">Blog</h1>
+    
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {sortedPosts.map((post, index) => (
+        <div class={`post-card ${index >= postsPerPage ? 'hidden' : ''}`}>
+          <Card>
+            <CardHeader>
+              <p class="text-sm font-medium text-blue-600 uppercase tracking-wider mb-2">{post.data.category || "Uncategorized"}</p>
+              <CardTitle>
+                <a href={`/blog/${post.id}`} class="hover:text-blue-600 transition-colors">{post.data.title}</a>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p class="text-slate-600 mb-4 line-clamp-3">{post.data.description}</p>
+              <p class="text-sm text-slate-500">
+                {post.data.pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      ))}
+    </div>
+
+    {sortedPosts.length > postsPerPage && (
+      <div class="mt-12 flex justify-center">
+        <button 
+          id="load-more-btn" 
+          data-posts-per-page={postsPerPage}
+          class="rounded-md bg-slate-900 px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2"
+        >
+          Load More
+        </button>
+      </div>
+    )}
+  </main>
+</GlobalLayout>
+
+<script>
+  const loadMoreBtn = document.getElementById('load-more-btn');
+  
+  if (loadMoreBtn) {
+    const postsPerPage = parseInt(loadMoreBtn.dataset.postsPerPage || '6', 10);
+    const postCards = document.querySelectorAll('.post-card');
+    let visibleCount = postsPerPage;
+
+    loadMoreBtn.addEventListener('click', () => {
+      let newlyRevealed = 0;
+      
+      // Reveal the next chunk of posts
+      for (let i = visibleCount; i < postCards.length; i++) {
+        postCards[i].classList.remove('hidden');
+        newlyRevealed++;
+        if (newlyRevealed >= postsPerPage) break;
+      }
+      
+      visibleCount += newlyRevealed;
+
+      // Hide the button once all posts are completely visible
+      if (visibleCount >= postCards.length) {
+        loadMoreBtn.classList.add('hidden');
+      }
+    });
+  }
+</script>

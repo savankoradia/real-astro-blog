@@ -1,0 +1,20 @@
+---
+import { SITE_CONFIG } from "@/config";
+---
+
+<section class="mx-auto flex max-w-5xl flex-col items-center justify-center px-4 py-24 text-center md:py-32">
+  <h1 class="text-5xl font-extrabold tracking-tight text-slate-900 sm:text-7xl">
+    Welcome to <span class="text-blue-600">{SITE_CONFIG.SITE_TITLE}</span>
+  </h1>
+  <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+    {SITE_CONFIG.SITE_DESCRIPTION}
+  </p>
+  <div class="mt-10 flex items-center justify-center gap-x-6">
+    <a href="/blog" class="rounded-md bg-slate-900 border border-transparent px-8 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2">
+      Read the Blog
+    </a>
+    <a href="/writer" class="rounded-md bg-white border border-slate-200 px-8 py-3 text-sm font-semibold text-slate-900 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2">
+      View Authors
+    </a>
+  </div>
+</section>

@@ -1,0 +1,21 @@
+---
+import GlobalLayout from "@/layouts/GlobalLayout.astro";
+import { SITE_CONFIG } from "@/config";
+---
+
+<GlobalLayout title={`Terms of Service - ${SITE_CONFIG.SITE_TITLE}`}>
+  <main class="mx-auto max-w-3xl px-4 py-12 md:py-20">
+    <article class="prose prose-slate prose-lg mx-auto">
+      <h1>Terms of Service</h1>
+      <p><em>Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</em></p>
+      
+      <p>This is a placeholder terms of service page. Replace this text with your actual terms of service content.</p>
+      
+      <h2>Acceptance of Terms</h2>
+      <p>By accessing and using this website, you accept and agree to be bound by the terms and provision of this agreement. In addition, when using these particular services, you shall be subject to any posted guidelines or rules applicable to such services.</p>
+      
+      <h2>Modifications</h2>
+      <p>We reserve the right to modify these terms from time to time at our sole discretion and without any notice. Changes to our Terms become effective on the date they are posted and your continued use of our website after any changes to Terms will signify your agreement to be bound by them.</p>
+    </article>
+  </main>
+</GlobalLayout>

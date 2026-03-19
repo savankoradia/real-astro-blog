@@ -1,0 +1,36 @@
+---
+import GlobalLayout from "@/layouts/GlobalLayout.astro";
+import { getCollection } from "astro:content";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { UserAvatar } from "@/components/UserAvatar";
+import { SITE_CONFIG } from "@/config";
+
+const writers = await getCollection("writers");
+---
+
+<GlobalLayout title={`Our Writers - ${SITE_CONFIG.SITE_TITLE}`}>
+  <main class="mx-auto max-w-5xl px-4 py-12">
+    <h1 class="mb-8 text-4xl font-extrabold tracking-tight text-slate-900">Our Writers</h1>
+    
+    <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {writers.map((writer) => (
+        <Card>
+          <CardHeader class="flex flex-col items-center text-center pb-2">
+            <UserAvatar 
+              src={writer.data.avatar} 
+              alt={writer.data.name} 
+              fallback={writer.data.name ? writer.data.name.charAt(0) : "W"} 
+              className="h-20 w-20 mb-4" 
+            />
+            <CardTitle>
+              <a href={`/writer/${writer.id}`} class="hover:text-blue-600 transition-colors">{writer.data.name}</a>
+            </CardTitle>
+          </CardHeader>
+          <CardContent class="text-center text-sm font-medium text-slate-500">
+            {writer.data.role}
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  </main>
+</GlobalLayout>

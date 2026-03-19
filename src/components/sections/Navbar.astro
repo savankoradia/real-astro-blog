@@ -1,0 +1,63 @@
+---
+import { getCollection } from "astro:content";
+import { NavMenu } from "@/components/NavMenu";
+import { SITE_CONFIG } from "@/config";
+
+// Fetch all blog posts and extract unique categories
+const posts = await getCollection("blog");
+const categories = [...new Set(posts.map((post) => post.data.category).filter(Boolean))];
+---
+
+<header class="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+  <div class="container mx-auto flex h-16 items-center justify-between px-4">
+    <a href="/" class="text-xl font-bold tracking-tight text-slate-900">
+      {SITE_CONFIG.SITE_TITLE.replace(" ", "")}
+    </a>
+    
+    <nav class="hidden md:flex items-center gap-6">
+      {SITE_CONFIG.NAV_LINKS.map(link => (
+        <a href={link.href} class="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+          {link.label}
+        </a>
+      ))}
+      <NavMenu categories={categories} client:load />
+    </nav>
+
+    <button id="mobile-menu-btn" class="md:hidden flex p-2 text-slate-600 hover:text-slate-900 focus:outline-none" aria-label="Toggle mobile menu">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+
+  <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white">
+    <nav class="flex flex-col space-y-4 px-4 py-6">
+      {SITE_CONFIG.NAV_LINKS.map(link => (
+        <a href={link.href} class="text-base font-medium text-slate-600 hover:text-slate-900 transition-colors">
+          {link.label}
+        </a>
+      ))}
+      <div class="border-t border-slate-100 pt-4">
+        <p class="mb-3 text-sm font-bold tracking-wider text-slate-900 uppercase">Categories</p>
+        <div class="flex flex-col space-y-3">
+          {categories.map((category) => (
+            <a href={`/category/${category.toLowerCase()}`} class="text-base font-medium capitalize text-slate-600 hover:text-slate-900 transition-colors">
+              {category}
+            </a>
+          ))}
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+
+  if (btn && menu) {
+    btn.addEventListener('click', () => {
+      menu.classList.toggle('hidden');
+    });
+  }
+</script>

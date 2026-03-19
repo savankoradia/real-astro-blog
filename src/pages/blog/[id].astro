@@ -1,0 +1,64 @@
+---
+/**
+ * Dynamic Blog Post Route (`/blog/[id]`)
+ * 
+ * This file is responsible for generating individual blog post pages.
+ * It uses Astro's `getStaticPaths` to fetch all entries from the "blog" content collection,
+ * creating a unique route for each post. It also retrieves the corresponding author details 
+ * from the "writers" collection and renders the Markdown content.
+ */
+import GlobalLayout from "@/layouts/GlobalLayout.astro";
+import { getCollection, render } from "astro:content";
+import { UserAvatar } from "@/components/UserAvatar";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+// Fetch the writer's details
+const writers = await getCollection("writers");
+const author = writers.find((w) => w.id === post.data.authorId);
+---
+
+<GlobalLayout title={post.data.title} description={post.data.description}>
+  <main class="mx-auto max-w-3xl px-4 py-12 md:py-20">
+    <header class="mb-10 text-center">
+      <p class="text-sm font-medium text-blue-600 uppercase tracking-wider">{post.data.category || "Uncategorized"}</p>
+      <h1 class="mt-2 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+        {post.data.title}
+      </h1>
+      <p class="mt-4 text-xl text-slate-600">{post.data.description}</p>
+      
+      {author && (
+        <div class="mt-8 flex items-center justify-center gap-4">
+          <a href={`/writer/${author.id}`}>
+            <UserAvatar
+              src={author.data.avatar}
+              alt={author.data.name}
+              fallback={author.data.name.charAt(0)}
+            />
+          </a>
+          <div class="text-left text-sm">
+            <a href={`/writer/${author.id}`} class="font-medium text-slate-900 hover:text-blue-600 transition-colors">
+              {author.data.name}
+            </a>
+            <p class="text-slate-500">
+              {post.data.pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            </p>
+          </div>
+        </div>
+      )}
+    </header>
+
+    <article class="prose prose-slate prose-lg mx-auto">
+      <Content />
+    </article>
+  </main>
+</GlobalLayout>

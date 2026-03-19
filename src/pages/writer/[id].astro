@@ -1,0 +1,126 @@
+---
+import GlobalLayout from "@/layouts/GlobalLayout.astro";
+import { getCollection, render } from "astro:content";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { UserAvatar } from "@/components/UserAvatar";
+import { SITE_CONFIG } from "@/config";
+
+export async function getStaticPaths() {
+  const writers = await getCollection("writers");
+  return writers.map((writer) => ({
+    params: { id: writer.id },
+    props: { writer },
+  }));
+}
+
+const { writer } = Astro.props;
+const { Content } = await render(writer);
+
+// Fetch all blog posts and filter by this specific author
+const allPosts = await getCollection("blog");
+const authorPosts = allPosts
+  .filter((post) => post.data.authorId === writer.id)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const postsPerPage = SITE_CONFIG.POSTS_PER_PAGE;
+---
+
+<GlobalLayout title={`${writer.data.name} - ${SITE_CONFIG.SITE_TITLE}`}>
+  <main class="mx-auto max-w-5xl px-4 py-12 md:py-20">
+    <a href="/writer" class="mb-8 inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">
+      <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to all writers
+    </a>
+
+    <div class="flex flex-col items-center text-center mb-16">
+      <UserAvatar
+        src={writer.data.avatar}
+        alt={writer.data.name}
+        fallback={writer.data.name ? writer.data.name.charAt(0) : "W"}
+        className="h-32 w-32 mb-6"
+      />
+      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl mb-2">
+        {writer.data.name}
+      </h1>
+      <p class="text-xl text-slate-600 font-medium">{writer.data.role}</p>
+      
+      <div class="prose prose-slate prose-lg mt-6 text-left max-w-2xl">
+        <Content />
+      </div>
+    </div>
+
+    <div>
+      <h2 class="text-2xl font-bold tracking-tight text-slate-900 mb-6">
+        Articles by {writer.data.name}
+      </h2>
+      
+      {authorPosts.length > 0 ? (
+        <>
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {authorPosts.map((post, index) => (
+              <div class={`post-card ${index >= postsPerPage ? 'hidden' : ''}`}>
+                <Card>
+                  <CardHeader>
+                    <p class="text-sm font-medium text-blue-600 uppercase tracking-wider mb-2">{post.data.category || "Uncategorized"}</p>
+                    <CardTitle>
+                      <a href={`/blog/${post.id}`} class="hover:text-blue-600 transition-colors">{post.data.title}</a>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p class="text-slate-600 mb-4 line-clamp-3">{post.data.description}</p>
+                    <p class="text-sm text-slate-500">
+                      {post.data.pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+          </div>
+
+          {authorPosts.length > postsPerPage && (
+            <div class="mt-12 flex justify-center">
+              <button 
+                id="load-more-btn" 
+                data-posts-per-page={postsPerPage}
+                class="rounded-md bg-slate-900 px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2"
+              >
+                Load More
+              </button>
+            </div>
+          )}
+        </>
+      ) : (
+        <p class="text-slate-600">No articles published yet.</p>
+      )}
+    </div>
+  </main>
+</GlobalLayout>
+
+<script>
+  const loadMoreBtn = document.getElementById('load-more-btn');
+  
+  if (loadMoreBtn) {
+    const postsPerPage = parseInt(loadMoreBtn.dataset.postsPerPage || '6', 10);
+    const postCards = document.querySelectorAll('.post-card');
+    let visibleCount = postsPerPage;
+
+    loadMoreBtn.addEventListener('click', () => {
+      let newlyRevealed = 0;
+      
+      // Reveal the next chunk of posts
+      for (let i = visibleCount; i < postCards.length; i++) {
+        postCards[i].classList.remove('hidden');
+        newlyRevealed++;
+        if (newlyRevealed >= postsPerPage) break;
+      }
+      
+      visibleCount += newlyRevealed;
+
+      // Hide the button once all posts are completely visible
+      if (visibleCount >= postCards.length) {
+        loadMoreBtn.classList.add('hidden');
+      }
+    });
+  }
+</script>

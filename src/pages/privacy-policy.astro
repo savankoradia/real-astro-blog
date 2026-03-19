@@ -1,0 +1,21 @@
+---
+import GlobalLayout from "@/layouts/GlobalLayout.astro";
+import { SITE_CONFIG } from "@/config";
+---
+
+<GlobalLayout title={`Privacy Policy - ${SITE_CONFIG.SITE_TITLE}`}>
+  <main class="mx-auto max-w-3xl px-4 py-12 md:py-20">
+    <article class="prose prose-slate prose-lg mx-auto">
+      <h1>Privacy Policy</h1>
+      <p><em>Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</em></p>
+      
+      <p>This is a placeholder privacy policy page. Replace this text with your actual privacy policy content.</p>
+      
+      <h2>Information We Collect</h2>
+      <p>We only collect the information you choose to give us, and we process it with your consent, or on another legal basis; we only require the minimum amount of personal information that is necessary to fulfill the purpose of your interaction with us.</p>
+      
+      <h2>How We Use Information</h2>
+      <p>We use the information we collect to operate and improve our website, apps, and customer support.</p>
+    </article>
+  </main>
+</GlobalLayout>

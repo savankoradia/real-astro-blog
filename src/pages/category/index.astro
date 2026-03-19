@@ -1,0 +1,30 @@
+---
+import GlobalLayout from "@/layouts/GlobalLayout.astro";
+import { getCollection } from "astro:content";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { SITE_CONFIG } from "@/config";
+
+// Fetch all blog posts and extract unique categories
+const allPosts = await getCollection("blog");
+const categories = [...new Set(allPosts.map((post) => post.data.category).filter(Boolean))];
+---
+
+<GlobalLayout title={`Categories - ${SITE_CONFIG.SITE_TITLE}`}>
+  <main class="mx-auto max-w-5xl px-4 py-12 md:py-20">
+    <h1 class="mb-8 text-4xl font-extrabold tracking-tight text-slate-900">Categories</h1>
+    
+    <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {categories.map((category) => (
+        <Card class="transition-shadow hover:shadow-md">
+          <CardHeader class="text-center">
+            <CardTitle>
+              <a href={`/category/${category.toLowerCase()}`} class="hover:text-blue-600 transition-colors capitalize before:absolute before:inset-0">
+                {category}
+              </a>
+            </CardTitle>
+          </CardHeader>
+        </Card>
+      ))}
+    </div>
+  </main>
+</GlobalLayout>
