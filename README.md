@@ -45,6 +45,17 @@ There's nothing special about `src/components/`, but that's where we like to put
 
 Any static assets, like images, can be placed in the `public/` directory.
 
+## ✨ Features & Configuration
+
+This template is designed to be highly customizable. All core site-wide settings are centralized in the `src/config.ts` file, making it incredibly easy to tailor the blog to your needs.
+
+You can easily configure the following features:
+
+- **Site Details:** Update the `SITE_TITLE` and `SITE_DESCRIPTION` to automatically apply your brand's global SEO and meta information across the entire site.
+- **Formunify Integrations:** Seamlessly collect leads and messages. Just drop in your Formunify.com form IDs for the `NEWSLETTER_FORM_ID` and `CONTACT_FORM_ID`.
+- **Blog Pagination:** Control exactly how many articles appear on your blog feed at a time by adjusting the `POSTS_PER_PAGE` limit.
+- **Custom Navigation:** Easily manage your main header menu (`NAV_LINKS`) and footer menu (`FOOTER_LINKS`), including support for external URLs.
+
 ## 🧞 Commands
 
 All commands are run from the root of the project, from a terminal:
