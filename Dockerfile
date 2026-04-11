@@ -1,24 +1,27 @@
 # Stage 1: Build
 FROM node:lts-alpine AS build
 WORKDIR /app
-COPY package.json package-lock.json* ./
-RUN npm ci
+
+# Install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy source and build the static site
 COPY . .
 RUN npm run build
 
-# Stage 2: Runtime
-FROM node:lts-alpine AS runtime
-WORKDIR /app
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/package.json ./package.json
+# Stage 2: Runtime (Static Hosting)
+FROM nginx:stable-alpine AS runtime
 
-# Environment variables for Coolify
+# Copy the static files from the build stage
+# Astro builds to the /dist folder by default
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Optional: Add a custom Nginx config to handle client-side routing if needed
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
 ENV HOST=0.0.0.0
 ENV PORT=80
-ENV NODE_ENV=production
-
+ENV NODE_ENV=development
 EXPOSE 80
 
-# Start the Astro SSR server
-CMD ["node", "./dist/server/entry.mjs"]
+CMD ["nginx", "-g", "daemon off;"]
